@@ -7,11 +7,6 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = {
     root: {
         display: 'flex',
-        '& > *': {
-
-
-          
-        },
       },
       
   };
@@ -31,6 +26,7 @@ const styles = {
             name:'',
             flag: '',
             capital: '',
+            regions: [],
 
         };
 
@@ -46,33 +42,52 @@ const styles = {
             
             this.setState({
                 items: data,
+                regions: this.getUniqueRegions(data),
             })
-            console.log(data);
+            //console.log(data);
             
          })
         .catch(err => console.log("Error:",err));
 
-        console.log(this.inputRef.current);
 
 
     }
 
-    selectRegion = (event) =>
+
+    getUniqueRegions = (items) => {
+        // var regionsArray = new Set();
+        // items.map(r => regionsArray.add(r.region));
+
+        const regions = [];
+
+        items.map(r => {
+        if (regions.indexOf(r.region) === -1) {
+        regions.push(r.region)}
+         });
+
+        return regions;
+
+    }
+    
+
+
+
+    selectRegion = (event,items) =>
     {
         this.setState({ value: event.target.value});
-        console.log(event.target.value);
+        // console.log(event.target.value);   
         
+
     }
 
     selectCountry = (event) =>
     {
         
-        //console.log(event.target.value);
 
         const {items} = this.state;
         const countriesData =  items.find(country => country.alpha3Code === event.target.value);
 
-        console.log(countriesData);
+        // console.log(countriesData);
 
         this.setState({
 
@@ -96,7 +111,7 @@ const styles = {
 
 
     render() {
-        const { items} = this.state;
+        const { items, regions} = this.state;
        
 
         return (
@@ -108,15 +123,17 @@ const styles = {
                 
 
                     <div className="root" >
-                    <Avatar style={{ height: '100px', width: '100px'}} variant="rounded" alt="Flag Of country" src={this.state.flag}>Flag</Avatar>
+                    <Avatar  style={{ height: '100px', width: '100px' }} variant="rounded" alt="Flag Of country" src={this.state.flag}>Flag</Avatar>
                 
                     </div>
                     <div id="info-container">
                         
-                    <select id="region" onChange={this.selectRegion} ref={this.inputRef}>
-                            {items.map(item => (
-                                <option key={item.value} value={item.region}>
-                                {item.region}
+                    <select id="region" onChange={this.selectRegion} ref={this.inputRef} >
+                        
+                        
+                            {regions.map(item => (
+                                <option key={item.region} value={item.region}>
+                                {item}
                                 </option>
                             )) 
                             }
@@ -126,7 +143,7 @@ const styles = {
                         <select id="countries" onChange={this.selectCountry} >
 
                         {items.filter(item => item.region === this.inputRef.current.value).map(item => (
-                                <option key={item.value} value={item.alpha3Code}>
+                                <option key={item.name} value={item.alpha3Code}>
                                 {item.name}
                                 </option>
                             ))}
@@ -135,14 +152,15 @@ const styles = {
                             
                         </select>  
 
+
                         
                         
-                        <TextField id="selectedContry" label="Country" value={this.state.name} variant="outlined"></TextField>
-                        <TextField id="capital" label="Capital" value={this.state.capital} variant="outlined"></TextField>
-                        <TextField id="demonym" label="Demonym" value={this.state.demonym} variant="outlined"></TextField>
-                        <TextField id="calling-code" label="Calling Codes" value={this.state.callingCodes} variant="outlined"></TextField>
-                        <TextField id="currencies" label="Currencies" value={this.state.currencies} variant="outlined"></TextField>
-                        <TextField id="population" label="Population" value={this.state.population} variant="outlined"></TextField>
+                        <TextField margin="normal" id="selectedContry" label="Country" value={this.state.name} variant="outlined"></TextField>
+                        <TextField margin="normal" id="capital" label="Capital" value={this.state.capital} variant="outlined"></TextField>
+                        <TextField margin="normal" id="demonym" label="Demonym" value={this.state.demonym} variant="outlined"></TextField>
+                        <TextField margin="normal" id="calling-code" label="Calling Codes" value={this.state.callingCodes} variant="outlined"></TextField>
+                        <TextField margin="normal" id="currencies" label="Currencies" value={this.state.currencies} variant="outlined"></TextField>
+                        <TextField margin="normal" id="population" label="Population" value={this.state.population} variant="outlined"></TextField>
                 
 
 
